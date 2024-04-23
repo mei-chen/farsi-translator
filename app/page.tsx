@@ -3,11 +3,10 @@ import { Translator } from "./ui/translator";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center p-12">
-        <h1 className="text-4xl font-semibold text-center">koobidic</h1>
-        <div className="z-10 w-3/4 items-center justify-between flex flex-col p-16">
+    <main className="p-7 flex min-h-screen flex-col items-center bg-indigo-50 font-['Schibsted Grotesk']">
+        <h1 className="text-3xl font-bold text-blue-950 text-center">koobidic</h1>
+        <div className="w-10/12 py-36 items-center justify-center gap-12 flex flex-row">
           <Translator translateFrom='English'></Translator>
-          <hr className="p-10"/>
           <Translator translateFrom='Farsi'></Translator>
         </div>
     </main>
