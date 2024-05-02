@@ -1,8 +1,8 @@
 'use client';
 import clsx from 'clsx';
 import { SpeakerWaveIcon, ClipboardIcon } from '@heroicons/react/20/solid';
-import { useEffect, useState } from 'react';
-import OpenAI from 'openai';
+import { useState } from 'react';
+
 
 export function Translator({translateFrom}: {translateFrom: string}) {
   const [translate, setTranslate] = useState('')
@@ -18,7 +18,7 @@ export function Translator({translateFrom}: {translateFrom: string}) {
   <div className="justify-start items-center gap-4 inline-flex p-6 -mx-6 bg-blue-300 rounded-t-2xl">
     <h2 className="text-blue-950 w-screen text-3xl font-bold">{translateFrom === 'English' ? "English → Farsi" : "Farsi → English"}</h2>
   </div>
-  <input type='text' className="my-4 text-blue-950 p-2 placeholder-blue-950 placeholder-opacity-45" onKeyDown={keyDownHandler} onChange={e => setTranslate(e.currentTarget.value)} placeholder='Type here...'/>
+  <input type='text' className="my-4 text-blue-950 p-2 placeholder-blue-950 placeholder-opacity-45 outline-none" onKeyDown={keyDownHandler} onChange={e => setTranslate(e.currentTarget.value)} placeholder='Type here...'/>
   <div className="h-10/12"></div>
   <div className="justify-between items-end flex">
   <div className="flex gap-4">

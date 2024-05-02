@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Translator } from "./ui/translator";
+
 
 export default function Home() {
   return (
