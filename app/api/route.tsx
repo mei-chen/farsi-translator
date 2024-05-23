@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         const stream = await openai.chat.completions.create({
         model: "gpt-4-turbo-preview",
         stream: true,
-        messages: [{role: "system", content: "translate this to Farsi in phonetics. Only state the phonetics."}
+        messages: [{role: "system", content: "translate this to Farsi in phonetics. Only state the phonetics, without any quotations added."}
             ,{role: 'user', content: text }],});
         
         
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         const farsi = await openai.chat.completions.create({
             model: "gpt-4-turbo-preview",
             stream: true,
-            messages: [{role: "system", content: "translate this to Farsi. Only state the farsi."}
+            messages: [{role: "system", content: "translate this to Farsi. Only state the farsi, without any quotations added."}
                 ,{role: 'user', content: write_stream }],});
         
         for await (const chunk of farsi) {
