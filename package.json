@@ -13,6 +13,7 @@
     "@next/env": "^14.2.3",
     "@tippyjs/react": "^4.2.6",
     "clsx": "^2.1.0",
+    "elevenlabs": "^0.6.0",
     "esrun": "^3.2.26",
     "next": "^14.2.3",
     "nextjs-openai": "^7.2.0",
@@ -20,6 +21,8 @@
     "openai-streams": "^6.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-tooltip": "^5.26.4",
+    "react-typed": "^2.0.12",
     "tippy.js": "^6.3.7",
     "typewriter-effect": "^2.21.0"
   },

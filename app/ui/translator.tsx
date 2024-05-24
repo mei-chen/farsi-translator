@@ -1,13 +1,46 @@
 'use client';
 import { SpeakerWaveIcon, ClipboardIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
-import Typewriter from 'typewriter-effect';
-import Tippy from '@tippyjs/react';
+import { Tooltip } from 'react-tooltip';
+import { ReactTyped, Typed } from "react-typed";
 
 export function Translator({translateFrom}: {translateFrom: string}) {
   const [translate, setTranslate] = useState('')
   const [text, setText] = useState('')
   const [farsi, setFarsi] = useState('')
+  const [open, setOpen] = useState(false)
+  const [speakOpen, setSpeakOpen] = useState(false)
+  const [typed,setTyped] = useState<Typed| undefined>()
+  const [audio, setAudio] = useState('')
+
+  const fetchVoiceResponse = async () => {
+    const response = await fetch("/api/tts", {
+      method: "POST",
+      headers: {
+        "Accept": "audio/mpeg",
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: translateFrom === "English" ? farsi : text }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return data;
+  }
+
+  const voiceClick = async () => {
+    if (text) {
+    setSpeakOpen(true);
+    const data = await fetchVoiceResponse();
+    // TODO: figure out how to get the player working
+    const audioBlob = new Blob([data.audio], { type: 'audio/mpeg' });
+    const audioUrl = URL.createObjectURL(audioBlob);
+    setAudio(audioUrl)
+    setSpeakOpen(false);
+    }
+  }
 
   const fetchAIResponse = async () => {
     const response = await fetch("/api", {
@@ -32,6 +65,15 @@ export function Translator({translateFrom}: {translateFrom: string}) {
       const data = await fetchAIResponse();
       setText(data.write_stream)
       setFarsi(data.write_farsi)
+      typed?.start()
+    }
+  }
+
+  const copyClick = async () => {
+    if (text) {
+    navigator.clipboard.writeText(text)
+    setOpen(true);
+    await new Promise(_ => setTimeout(() => {setOpen(false)}, 1000)); // 1 second delay
     }
   }
 
@@ -42,31 +84,37 @@ export function Translator({translateFrom}: {translateFrom: string}) {
   </div>
   <input type='text' className="my-4 text-blue-950 p-2 placeholder-blue-950 placeholder-opacity-45 outline-none" onKeyDown={keyDownHandler} onChange={e => setTranslate(e.currentTarget.value)} placeholder='Type here...'/>
   <hr></hr>
-  {/* <Typewriter
-    options={{
-      strings: text,
-      autoStart: true,
-      loop: false,
-      delay: 1,
-    }}
-/> */}
-  <span className="text-blue-950 p-2 outline-none text-wrap">{text}</span>
-  <span className="text-blue-950 p-2 outline-none text-wrap">{farsi}</span>
+  <ReactTyped
+    className="text-blue-950 p-2 outline-none text-wrap"
+    typedRef={setTyped}
+    strings={[text]}
+    typeSpeed={40}
+    showCursor={false}
+/>
+<ReactTyped
+    className="text-blue-950 p-2 outline-none text-wrap"
+    typedRef={setTyped}
+    strings={[farsi]}
+    typeSpeed={40}
+    showCursor={false}
+/>
+  {/* TODO: figure out how to get the player working, and style it well */}
+  <audio controls src={audio} className="text-blue-950 m-2 outline-none text-wrap" hidden={audio ? false : true}></audio>
   <div className="justify-between items-end flex">
   <div className="flex gap-4">
     <div className="flex-col items-end gap-1 flex">
-      <button className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={() => console.log('wow')}>
+      <button id={"voice" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={voiceClick}>
       <SpeakerWaveIcon className="h-8"/>
        <span>Speak</span>
         </button>
+    <Tooltip anchorSelect={'#voice' + translateFrom} isOpen={speakOpen} content="Generating audio..." className='!bg-blue-300 !rounded-lg'/>
+
     </div>
-    <div className="flex-col items-end gap-1 flex">
-    <Tippy content="Copied to clipboard!" trigger='click' arrow='true' className='bg-blue-300 p-1 rounded-lg'>
-      <button className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={() => {navigator.clipboard.writeText(text)}}>
+    <div className="flex-col items-end gap-1 flex"><button id={"copy" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={copyClick}>
       <ClipboardIcon className="h-8"/>
        <span>Copy</span>
         </button>
-    </Tippy>
+    <Tooltip anchorSelect={"#copy" + translateFrom} isOpen={open} content="Copied to clipboard!" className='!bg-blue-300 !rounded-lg'/>
     </div>
   </div>
     <div className="text-blue-950 text-opacity-70 font-normal py-2">Press enter to translate</div>
