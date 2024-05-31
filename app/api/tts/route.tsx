@@ -16,7 +16,13 @@ export async function POST(request: NextRequest) {
         "stability": 0.7,
         "similarity_boost": 0.2
     }});
-    
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of audio) {
+      chunks.push(chunk);
+    }
+  
+    const content = Buffer.concat(chunks);
     await play(audio);  // TODO: remove this line once you're able to figure out how to get the player working
-    return NextResponse.json({audio})
+    return NextResponse.json({buffer: content})
 }

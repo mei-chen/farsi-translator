@@ -27,17 +27,23 @@ export function Translator({translateFrom}: {translateFrom: string}) {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    return data;
+    
+    // const buffer = data.buffer;
+    const buffer = new Uint8Array(data.buffer.data).buffer;
+    return buffer;
+    // setAudio(data.audio);
+
+    // console.log(audio)
   }
 
   const voiceClick = async () => {
     if (text) {
     setSpeakOpen(true);
-    const data = await fetchVoiceResponse();
-    // TODO: figure out how to get the player working
-    const audioBlob = new Blob([data.audio], { type: 'audio/mpeg' });
+    const buffer = await fetchVoiceResponse();
+    const audioBlob = new Blob([buffer], { type: 'audio/mpeg' });
     const audioUrl = URL.createObjectURL(audioBlob);
     setAudio(audioUrl)
+    // TODO: figure out how to get the player working
     setSpeakOpen(false);
     }
   }
@@ -82,35 +88,43 @@ export function Translator({translateFrom}: {translateFrom: string}) {
   <div className="justify-start items-center gap-4 inline-flex p-6 -mx-6 bg-blue-300 rounded-t-2xl">
     <h2 className="text-white w-screen text-3xl font-bold">{translateFrom === 'English' ? "English ➜ Farsi" : "Farsi ➜ English"}</h2>
   </div>
-  <input type='text' className="my-4 text-blue-950 p-2 placeholder-blue-950 placeholder-opacity-45 outline-none" onKeyDown={keyDownHandler} onChange={e => setTranslate(e.currentTarget.value)} placeholder='Type here...'/>
-  <hr></hr>
+  <textarea rows={4} className="my-4 p-2 text-blue-950 placeholder-blue-950 placeholder-opacity-45 outline-none text-wrap resize-none" onKeyDown={keyDownHandler} onChange={e => setTranslate(e.currentTarget.value)} placeholder='Type here...'/>
+  <hr className="px-2"></hr>
   <ReactTyped
     className="text-blue-950 p-2 outline-none text-wrap"
     typedRef={setTyped}
     strings={[text]}
-    typeSpeed={40}
+    typeSpeed={1}
     showCursor={false}
 />
 <ReactTyped
     className="text-blue-950 p-2 outline-none text-wrap"
     typedRef={setTyped}
     strings={[farsi]}
-    typeSpeed={40}
+    typeSpeed={1}
     showCursor={false}
 />
   {/* TODO: figure out how to get the player working, and style it well */}
-  <audio controls src={audio} className="text-blue-950 m-2 outline-none text-wrap" hidden={audio ? false : true}></audio>
-  <div className="justify-between items-end flex">
+  {/* <audio controls src={audio} className="text-blue-950 m-2 outline-none text-wrap" hidden={audio ? false : true}></audio> */}
+  {audio && (
+                <div>
+                    <audio className='my-2 px-2 w-full' controls>
+                        <source src={audio} type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            )}
+  <div className="justify-between items-end flex py-4">
   <div className="flex gap-4">
     <div className="flex-col items-end gap-1 flex">
-      <button id={"voice" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={voiceClick}>
+      <button id={"voice" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out p-2 delay-75 hover:text-opacity-100' onClick={voiceClick}>
       <SpeakerWaveIcon className="h-8"/>
        <span>Speak</span>
         </button>
     <Tooltip anchorSelect={'#voice' + translateFrom} isOpen={speakOpen} content="Generating audio..." className='!bg-blue-300 !rounded-lg'/>
 
     </div>
-    <div className="flex-col items-end gap-1 flex"><button id={"copy" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out py-2 delay-75 hover:text-opacity-100' onClick={copyClick}>
+    <div className="flex-col items-end gap-1 flex"><button id={"copy" + translateFrom} className='flex flex-col items-center text-opacity-45 text-blue-950 text-center transition ease-in-out p-2 delay-75 hover:text-opacity-100' onClick={copyClick}>
       <ClipboardIcon className="h-8"/>
        <span>Copy</span>
         </button>

@@ -21,8 +21,10 @@
     "openai-streams": "^6.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-h5-audio-player": "^3.9.1",
     "react-tooltip": "^5.26.4",
     "react-typed": "^2.0.12",
+    "stream-to-array": "^2.3.0",
     "tippy.js": "^6.3.7",
     "typewriter-effect": "^2.21.0"
   },
@@ -30,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/stream-to-array": "^2.3.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.2",
     "postcss": "^8",
