@@ -3,6 +3,7 @@ import { SpeakerWaveIcon, ClipboardIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { ReactTyped, Typed } from "react-typed";
+import CustomAudioPlayer from './audio';
 
 export function Translator({translateFrom}: {translateFrom: string}) {
   const [translate, setTranslate] = useState('')
@@ -28,12 +29,8 @@ export function Translator({translateFrom}: {translateFrom: string}) {
       throw new Error('Network response was not ok');
     }
     
-    // const buffer = data.buffer;
     const buffer = new Uint8Array(data.buffer.data).buffer;
     return buffer;
-    // setAudio(data.audio);
-
-    // console.log(audio)
   }
 
   const voiceClick = async () => {
@@ -43,7 +40,6 @@ export function Translator({translateFrom}: {translateFrom: string}) {
     const audioBlob = new Blob([buffer], { type: 'audio/mpeg' });
     const audioUrl = URL.createObjectURL(audioBlob);
     setAudio(audioUrl)
-    // TODO: figure out how to get the player working
     setSpeakOpen(false);
     }
   }
@@ -104,11 +100,10 @@ export function Translator({translateFrom}: {translateFrom: string}) {
     typeSpeed={1}
     showCursor={false}
 />
-  {/* TODO: figure out how to get the player working, and style it well */}
-  {/* <audio controls src={audio} className="text-blue-950 m-2 outline-none text-wrap" hidden={audio ? false : true}></audio> */}
+
   {audio && (
                 <div>
-                    <audio className='my-2 px-2 w-full' controls>
+                    <audio className='my-2 px-2 w-full' controls autoPlay={true}>
                         <source src={audio} type="audio/mpeg" />
                         Your browser does not support the audio element.
                     </audio>
