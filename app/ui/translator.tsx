@@ -3,7 +3,6 @@ import { SpeakerWaveIcon, ClipboardIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { ReactTyped, Typed } from "react-typed";
-import CustomAudioPlayer from './audio';
 
 export function Translator({translateFrom}: {translateFrom: string}) {
   const [translate, setTranslate] = useState('')
